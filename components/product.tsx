@@ -2,7 +2,7 @@ import ItemP from '@/components/ItemP';
 
 export default function Product() {
     return(
-        <div className="p-10 bg-blue-900 grid grid-cols-4 gap-x-2 gap-y-9 place-content-center place-items-center w-full" >
+      <div className="bg-blue-900 grid grid-cols-6 gap-y-5 gap-x-5 place-content-center place-items-center mr-16 ml-16 rounded-3xl" >
             <ItemP 
                     image="https://png.pngtree.com/png-clipart/20220117/original/pngtree-milk-png-image_7148647.png"
                     title="Milk"
@@ -33,6 +33,6 @@ export default function Product() {
                     price="15,000 Kip" />
 
         </div>
-                 
+               
     )
 }

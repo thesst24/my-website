@@ -2,7 +2,7 @@ import Form from 'next/form';
 
 export default function Header() {
     return(
-        <div className="flex flex-row justify-around items-center bg-red-200 sticky top-0 z-50">
+        <div className="flex flex-row justify-around items-center bg-red-200 mt-8 mb-8 ml-16 mr-16 rounded-3xl ">
             <img src="https://png.pngtree.com/png-vector/20221228/ourmid/pngtree-online-shopping-logo-desing-png-image_6540923.png" 
             alt="LogoShop"
             width="80"
