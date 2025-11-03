@@ -1,19 +1,22 @@
 'use client';
+import Image, {StaticImageData} from 'next/image';
 
 interface props {
-    image: any;
+    image: StaticImageData;
     title: string;
+    size: string;
     price: string;
 }
 
-export default function Product({image,title,price}: props) {
+export default function ItemP({image,title,size,price}: props) {
     return(
-             <div>
-                <div className="w-60 h-75">
-                    <img className="ml-auto mr-auto" src={image} width="250" height="250" />
+             <div className="flex flex-col justify-center items-center w-70 h-100 bg-amber-300 rounded-[20em/5em] text-center m-5 z-0">
+                <div className="w-50 h-50 mb-10 relative">
+                    <Image className="ml-auto mr-auto absolute" src={image} objectFit= "contain" layout="fill" alt='item' />
                 </div>
                  <div>
                     <h2 className="text-3xl font-bold">{title}</h2>
+                    <p>{size}</p>
                     <p className="text-2xl font-bold">{price}</p>
                  </div>
             </div>          
