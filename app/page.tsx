@@ -4,6 +4,7 @@ import Product from '@/components/product';
 import Footer from '@/components/footer';
 import { title } from 'process';
 import Gdropdown from '@/components/gropdropdown';
+import Test from '@/components/test';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
       <Header />
       <Hero />
       <Gdropdown />
+      <Test />
       <Product />
       <Footer />
     </div>
