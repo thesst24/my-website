@@ -4,6 +4,7 @@ import Footer from '@/components/footer';
 import { title } from 'process';
 import Gdropdown from '@/components/gropdropdown';
 import HeroS from '@/components/HeroS';
+import Hero from '@/components/hero';
 
 export default function Home() {
   return (
