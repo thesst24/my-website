@@ -13,7 +13,7 @@ import Twix from '@/public/Twix.png';
 
 export default function Product() {
     return(
-      <div className="bg-blue-900 flex justify-center items-center flex-wrap mr-16 ml-16 rounded-3xl" >
+      <div id="shop" className="bg-blue-400 flex justify-center items-center flex-wrap mr-16 ml-16 rounded-3xl" >
                 <ItemP 
                     image={Silk}
                     title="Silk ALMOND"

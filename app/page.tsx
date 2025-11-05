@@ -1,5 +1,4 @@
 import Header from '@/components/header';
-import Hero from '@/components/hero';
 import Product from '@/components/product';
 import Footer from '@/components/footer';
 import { title } from 'process';
@@ -8,10 +7,9 @@ import HeroS from '@/components/HeroS';
 
 export default function Home() {
   return (
-    <div>
+    <div className='bg-gray-200 p-0 m-0'>
       <Header />
       <HeroS />
-      <Hero />
       <Gdropdown />
       <Product />
       <Footer />

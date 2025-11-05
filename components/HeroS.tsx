@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
+import Image, {StaticImageData} from "next/image";
 import Link from "next/link";
+import Allfood from '@/public/allfood1.png';
 
 interface Slide {
   id: number;
   title: string;
   subtitle: string;
-  image: string;
+  image: StaticImageData;
   buttonText: string;
   link: string;
 }
@@ -15,9 +16,9 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    title: "Winter Collection 2025",
+    title: "All Food",
     subtitle: "Fresh looks for the season. Stay warm, stay stylish.",
-    image: "/images/slide1.jpg",
+    image: Allfood ,
     buttonText: "Shop Now",
     link: "/shop",
   },
@@ -25,7 +26,7 @@ const slides: Slide[] = [
     id: 2,
     title: "Flash Sale!",
     subtitle: "Up to 60% off selected items. Limited time only!",
-    image: "/images/slide2.jpg",
+    image: Allfood,
     buttonText: "Grab Deals",
     link: "/sale",
   },
@@ -33,7 +34,7 @@ const slides: Slide[] = [
     id: 3,
     title: "Accessories That Shine",
     subtitle: "Upgrade your style with the latest accessories.",
-    image: "/images/slide3.jpg",
+    image: Allfood,
     buttonText: "Browse Accessories",
     link: "/accessories",
   },
@@ -54,7 +55,7 @@ const HeroSection: React.FC = () => {
   const prevSlide = () => setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
 
   return (
-    <section className="relative h-[80vh] w-full overflow-hidden">
+    <section className="relative h-[60vh] overflow-hidden ml-16 mr-16 my-10 rounded-4xl">
       {/* Slides */}
       {slides.map((slide, index) => (
         <div
@@ -101,6 +102,7 @@ const HeroSection: React.FC = () => {
       <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2">
         {slides.map((_, index) => (
           <button
+          title="Dots slide"
             key={index}
             onClick={() => setCurrent(index)}
             className={`w-3 h-3 rounded-full transition ${
