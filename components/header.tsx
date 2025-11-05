@@ -1,4 +1,5 @@
 import Form from 'next/form';
+import Link from 'next/link';
 
 export default function Header() {
     return(
@@ -10,8 +11,10 @@ export default function Header() {
             />
             <div className="text-black-500 flex gap-8">
                 <button  className="cursor-pointer hover:text-white hover:underline font-bold">Home</button>
-                <button  className="cursor-pointer hover:text-white hover:underline font-bold">Order</button>
-                <button  className="cursor-pointer hover:text-white hover:underline font-bold">Contact</button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/buy">Buy</Link></button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/addItem">ADD</Link></button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold">Profile</button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/login">LoginManageWebsite</Link></button>
             </div>
         </div>
     )

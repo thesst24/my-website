@@ -3,6 +3,7 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAuth } from 'firebase/auth';
 
+
 const firebaseConfig = {
     
 apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -15,7 +16,7 @@ measurementId: "G-9FYFS55V6Q"
 
 };
 
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
