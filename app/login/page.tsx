@@ -16,7 +16,7 @@ export default function LoginPage() {
     setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push("/");
+      router.push("/addItem");
     } catch (err: any) {
       setError(err.message);
     }
@@ -53,12 +53,12 @@ export default function LoginPage() {
           Login
         </button>
 
-        <p className="text-sm text-center mt-4">
+         <p className="text-sm text-center mt-4">
           Don’t have an account?{" "}
           <a href="/register" className="text-green-600 hover:underline">
             Register
           </a>
-        </p>
+        </p> 
       </form>
     </div>
   );

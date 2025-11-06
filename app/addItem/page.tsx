@@ -1,138 +1,235 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { db, storage } from "@/lib/firebase";
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useEffect, useState } from "react";
+import { addItem, deleteItem, getItems, updateItem, Item } from "@/lib/firestore";
 
-type Item = {
-  id?: string;
-  name: string;
-  size: string;
-  price: number;
-  imageUrl: string;
-};
-
-export default function AdminPage() {
+export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
-  const [name, setName] = useState("");
-  const [size, setSize] = useState("");
-  const [price, setPrice] = useState<number>(0);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [message, setMessage] = useState("");
-
-  const itemsCollection = collection(db, "items");
-
-  // Fetch items from Firestore
-  const fetchItems = async () => {
-    const snapshot = await getDocs(itemsCollection);
-    const itemList: Item[] = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Item),
-    }));
-    setItems(itemList);
-  };
+  const [form, setForm] = useState<Omit<Item, "id">>({
+    name: "",
+    image: "",
+    size: "",
+    price: 0,
+    type: "",
+  });
+  const [editing, setEditing] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState<Omit<Item, "id">>({
+    name: "",
+    image: "",
+    size: "",
+    price: 0,
+    type: "",
+  });
 
   useEffect(() => {
-    fetchItems();
+    loadItems();
   }, []);
 
-  // Handle Add Item
-  const handleAddItem = async () => {
-    if (!name || !size || price <= 0 || !imageFile) {
-      setMessage("❌ Fill all fields and select an image");
-      return;
-    }
+  const loadItems = async () => {
+    const data = await getItems();
+    setItems(data);
+  };
 
-    try {
-      // Upload image to Firebase Storage
-      const storageRef = ref(storage, `items/${imageFile.name}-${Date.now()}`);
-      await uploadBytes(storageRef, imageFile);
-      const imageUrl = await getDownloadURL(storageRef);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "price" ? parseFloat(value) || 0 : value,
+    }));
+  };
 
-      // Add item to Firestore
-      await addDoc(itemsCollection, {
-        name,
-        size,
-        price,
-        imageUrl,
-        createdAt: new Date(),
-      });
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim()) return;
+    await addItem(form);
+    setForm({ name: "", image: "", size: "", price: 0, type: "" });
+    loadItems();
+  };
 
-      setMessage(`✅ Added ${name} successfully`);
-      setName("");
-      setSize("");
-      setPrice(0);
-      setImageFile(null);
-      fetchItems();
-    } catch (error) {
-      console.error(error);
-      setMessage("❌ Error adding item");
-    }
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: name === "price" ? parseFloat(value) || 0 : value,
+    }));
+  };
+
+  const handleUpdate = async (id: string) => {
+    await updateItem(id, editForm);
+    setEditing(null);
+    loadItems();
+  };
+
+  const handleDelete = async (id: string) => {
+    await deleteItem(id);
+    loadItems();
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center p-6">
-      <h1 className="text-3xl font-bold mb-6">🛒 Admin: Add Item with Image</h1>
+    <main className="flex flex-col items-center h-screen bg-gray-50 p-8">
+      <h1 className="text-3xl font-bold mb-6">🛒 Add Items Shopping List</h1>
 
-      {/* Form */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 items-center">
+      {/* Add Form */}
+      <form
+        onSubmit={handleAdd}
+        className="flex flex-col gap-3 bg-white p-4 rounded shadow w-full max-w-md mb-8"
+      >
         <input
-          type="text"
-          placeholder="Item Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="border p-2 rounded w-60"
+          name="name"
+          value={form.name}
+          onChange={handleChange}
+          placeholder="Name"
+          className="border p-2 rounded"
+          required
         />
         <input
-          type="text"
-          placeholder="Size (S, M, L)"
-          value={size}
-          onChange={(e) => setSize(e.target.value)}
-          className="border p-2 rounded w-32"
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(Number(e.target.value))}
-          className="border p-2 rounded w-32"
-        />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+          name="image"
+          value={form.image}
+          onChange={handleChange}
+          placeholder="imageUrl"
           className="border p-2 rounded"
         />
+        <select
+          name="size"
+          value={form.size}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option value="">Select Size</option>
+          <option value="Small">Small</option>
+          <option value="Medium">Medium</option>
+          <option value="Large">Large</option>
+        </select>
+        <input
+          name="price"
+          type="number"
+          value={form.price}
+          onChange={handleChange}
+          placeholder="Price"
+          className="border p-2 rounded"
+        />
+       <select
+          name="type"
+          value={form.type}
+          onChange={handleChange}
+          className="border p-2 rounded"
+        >
+          <option value="">Category</option>
+          <option value="fruit">fruit</option>
+          <option value="candy">candy</option>
+          <option value="food">food</option>
+        </select>
         <button
-          onClick={handleAddItem}
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          type="submit"
+          className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
           Add Item
         </button>
-      </div>
+      </form>
 
-      {message && <p className="mb-6">{message}</p>}
+      {/* Item List */}
 
-      {/* Items List */}
-      <h2 className="text-2xl font-semibold mb-4">Available Items</h2>
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+      <ul className="flex gap-3 flex-wrap">
         {items.map((item) => (
-          <div
+          <li
             key={item.id}
-            className="border p-4 rounded-lg shadow bg-white flex flex-col items-center"
+            className="flex flex-col bg-white p-4 rounded shadow mb-3"
           >
-            <img
-              src={item.imageUrl}
-              alt={item.name}
-              className="w-40 h-40 object-cover rounded mb-2"
-            />
-            <h3 className="text-xl font-semibold">{item.name}</h3>
-            <p className="text-gray-600">Size: {item.size}</p>
-            <p className="text-gray-600 font-bold">${item.price}</p>
-          </div>
+            {editing === item.id ? (
+              <>
+                <input
+                  name="name"
+                  value={editForm.name}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
+                <input
+                  name="image"
+                  value={editForm.image}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
+                <select
+                  name="size"
+                  value={editForm.size}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                >
+                  <option value="Small">Small</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Large">Large</option>
+                </select>
+                <input
+                  name="price"
+                  type="number"
+                  value={editForm.price}
+                  onChange={handleEditChange}
+                  className="border p-2 rounded"
+                />
+                <select
+          name="type"
+          value={form.type}
+          onChange={handleEditChange}
+          className="border p-2 rounded"
+        >
+          <option value="fruit">fruit</option>
+          <option value="candy">candy</option>
+          <option value="food">food</option>
+        </select>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={() => handleUpdate(item.id!)}
+                    className="bg-green-600 text-white px-4 py-2 rounded"
+                  >
+                    Save
+                  </button>
+                  <button
+                    onClick={() => setEditing(null)}
+                    className="bg-gray-400 text-white px-4 py-2 rounded"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex w-full h-35 justify-center flex-col items-center">
+                  <div className="flex flex-col justify-center items-center">
+                    <img src={item.image} alt="image" width={70} height={70} />
+                    <p className="font-bold">{item.name}</p>
+                    <p className="text-sm text-gray-600">
+                       {item.size} | {item.type} | {item.price} kip
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setEditing(item.id!);
+                        setEditForm({
+                          name: item.name,
+                          image: item.image,
+                          size: item.size,
+                          price: item.price,
+                          type: item.type,
+                        });
+                      }}
+                      className="text-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item.id!)}
+                      className="text-red-600"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }
