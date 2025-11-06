@@ -23,11 +23,11 @@ interface ProductProps {
 export default function ItemP({id,image,title,size,price}: ProductProps) {
     const handleAddToCart = async () => {
     try {
-      const q = query(collection(db, "items"), where("productId", "==", id));
+      const q = query(collection(db, "cart"), where("productId", "==", id));
       const snapshot = await getDocs(q);
 
       if (snapshot.empty) {
-        await addDoc(collection(db, "items"), {
+        await addDoc(collection(db, "cart"), {
           productId: id,
           title,
           image,
@@ -37,7 +37,7 @@ export default function ItemP({id,image,title,size,price}: ProductProps) {
         });
       } else {
         snapshot.forEach(async (docSnap) => {
-          const ref = doc(db, "itmes", docSnap.id);
+          const ref = doc(db, "cart", docSnap.id);
           await updateDoc(ref, { quantity: docSnap.data().quantity + 1 });
         });
       }
@@ -49,7 +49,7 @@ export default function ItemP({id,image,title,size,price}: ProductProps) {
   };
     return(
              <div className="flex flex-col justify-center items-center w-70 h-100 hover:shadow-lg transition bg-gray-100 shadow-3xl rounded-[20em/5em] text-center m-5 z-0">
-                <div className="w-50 h-50 mb-10 relative hover:cursor-pointer">
+                <div className="w-50 h-50 mb-3 relative hover:cursor-pointer">
                     <img className="ml-auto mr-auto absolute" src={image} alt='item' />
                 </div>
                  <div className="hover:cursor-pointer">

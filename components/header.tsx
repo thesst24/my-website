@@ -10,8 +10,8 @@ export default function Header() {
             height="80"
             />
             <div className="text-black-500 flex gap-8">
-                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/login">Admin</Link></button>
-                <button  className="cursor-pointer hover:text-white hover:underline font-bold">Home</button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/login" target="_blank" >Admin</Link></button>
+                <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/">Home</Link></button>
                 <button  className="cursor-pointer hover:text-white hover:underline font-bold"><Link href="/order">Order</Link></button>
                 <button  className="cursor-pointer hover:text-white hover:underline font-bold">Profile</button>
             </div>

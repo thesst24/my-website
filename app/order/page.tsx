@@ -13,6 +13,7 @@ import {
   addDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import Header from "@/components/header";
 
 
 interface CartItem {
@@ -28,7 +29,7 @@ export default function Cart() {
   const [items, setItems] = useState<CartItem[]>([]);
 
   useEffect(() => {
-    const q = query(collection(db, "items"), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "cart"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const cartItems = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -41,12 +42,12 @@ export default function Cart() {
   }, []);
 
   const increment = async (id: string, quantity: number) => {
-    const ref = doc(db, "items", id);
+    const ref = doc(db, "cart", id);
     await updateDoc(ref, { quantity: quantity + 1 });
   };
 
   const decrement = async (id: string, quantity: number) => {
-    const ref = doc(db, "items", id);
+    const ref = doc(db, "cart", id);
     if (quantity > 1) {
       await updateDoc(ref, { quantity: quantity - 1 });
     } else {
@@ -69,7 +70,7 @@ export default function Cart() {
 
       // Clear cart
       for (const item of items) {
-        await deleteDoc(doc(db, "items", item.id));
+        await deleteDoc(doc(db, "cart", item.id));
       }
 
       alert("Purchase successful!");
@@ -81,7 +82,8 @@ export default function Cart() {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
-    <div className="mt-8 border-t pt-4">
+    <div className="">
+      <Header/>
       <h2 className="text-xl font-semibold mb-4">🛒 Your Cart</h2>
       {items.length === 0 ? (
         <p className="text-gray-500">Your cart is empty.</p>
@@ -111,7 +113,7 @@ export default function Cart() {
                   >
                     +
                   </button>
-                  <span className="text-gray-700">${(item.price * item.quantity).toFixed(2)}</span>
+                  <span className="text-gray-700">{(item.price * item.quantity).toFixed()} Kip</span>
                 </div>
               </li>
             ))}
@@ -119,7 +121,7 @@ export default function Cart() {
 
           <div className="flex justify-between mt-4 font-semibold text-lg">
             <span>Total:</span>
-            <span>${total.toFixed(2)}</span>
+            <span>{total.toFixed()} Kip</span>
           </div>
 
           <button
