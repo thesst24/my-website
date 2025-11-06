@@ -16,7 +16,7 @@ measurementId: "G-9FYFS55V6Q"
 
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 const storage = getStorage(app);
 

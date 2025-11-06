@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { addItem, deleteItem, getItems, updateItem, Item } from "@/lib/firestore";
 
+export const dynamic = 'force-dynamic';
+
 export default function Home() {
   const [items, setItems] = useState<Item[]>([]);
   const [form, setForm] = useState<Omit<Item, "id">>({
